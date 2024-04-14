@@ -19,4 +19,4 @@ def add_bug_report(filename, bug_desc, resolved):
 bug_desc = input("Description: ")
 resolved = input("Resolved? (YES/NO): ")
 
-add_bug_report('bugs.txt', bug_desc, resolved.upper())
+add_bug_report('Issues\\bugs.txt', bug_desc, resolved.upper())
