@@ -89,7 +89,7 @@ async def channel_log_general(message):
         json_file.write('\n')
 
 async def deleted_messages_general(message):
-    print("Deleted Message: ", message.content)
+    #print("Deleted Message: ", message.content)
     author = message.author
 
     data = {
@@ -142,12 +142,18 @@ async def on_ready():
 
     await write_session_info(guild, session_id)
 
+
 @client.event
 async def on_message(message):
-    if message.channel.id == CHANNEL_ACTIVE_DEVELOPING:
-        await on_message_active_developing(message)
-    elif message.channel.id == CHANNEL_GENERAL:
-        await on_message_general(message)
+    channel_handlers = {
+        CHANNEL_ACTIVE_DEVELOPING: on_message_active_developing,
+        CHANNEL_GENERAL: on_message_general
+    }
+
+    for channel_id, handler in channel_handlers.items():
+        if message.channel.id == channel_id:
+            await handler(message)
+            break
 
 async def on_message_active_developing(message):
     await channel_log_active_developing(message)
@@ -155,4 +161,20 @@ async def on_message_active_developing(message):
 async def on_message_general(message):
     await channel_log_general(message)
 
+
+logging_functions = {
+    CHANNEL_GENERAL: deleted_messages_general,
+    CHANNEL_ACTIVE_DEVELOPING: deleted_messages_active_developing
+}
+
+@client.event
+async def on_message_delete(message):
+    channel_id = message.channel.id
+    logging_function = logging_functions.get(channel_id)
+    if logging_function:
+        print(f"{channel_id}: {message.content}")
+        await logging_function(message)
+
+                                             
 client.run(TOKEN)
+
