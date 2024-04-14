@@ -144,22 +144,15 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.channel.id != CHANNEL_ACTIVE_DEVELOPING:
-        return
+    if message.channel.id == CHANNEL_ACTIVE_DEVELOPING:
+        await on_message_active_developing(message)
+    elif message.channel.id == CHANNEL_GENERAL:
+        await on_message_general(message)
 
+async def on_message_active_developing(message):
     await channel_log_active_developing(message)
 
-@client.event
-async def on_message(message):
-    if message.channel.id != CHANNEL_GENERAL:
-        return
-
+async def on_message_general(message):
     await channel_log_general(message)
-
-@client.event
-async def on_message_delete(message):
-    #print("message deleted: ",message.content)
-    await deleted_messages_general(message)
-    await deleted_messages_active_developing(message)
 
 client.run(TOKEN)
