@@ -2,7 +2,8 @@ import os
 import discord
 import json
 from discord.ext import commands
-from Functions import Kommandos
+from Functions import commands
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,8 +14,6 @@ CHANNEL_GENERAL= int(os.getenv('CHANNEL_GENERAL'))
 
 intents = discord.Intents.all()
 
-# bot = commands.Bot(command_prefix='!', intents=intents)
-# bot.load_extension('Kommandos')
 
 
 
