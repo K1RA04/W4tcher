@@ -1,0 +1,7 @@
+-------------------------------
+Bug1
+Description: in Byte_Bot.py, messages deleted from general chat are logged into the Directory Logs/channel_active_developing/deleted-messages-log.json
+        -> it should just log the deleted messages into the directory Logs/channel_general/deleted-messages-log.json
+Date of notice: 2024-04-14 12:36
+Resolved: YES
+-------------------------------
