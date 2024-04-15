@@ -14,9 +14,6 @@ CHANNEL_GENERAL= int(os.getenv('CHANNEL_GENERAL'))
 
 intents = discord.Intents.all()
 
-
-
-
 client = discord.Client(intents=intents)
 
 async def channel_log_active_developing(message):
@@ -48,7 +45,7 @@ async def deleted_messages_active_developing(message):
         "author": {
             "id": str(author.id),
             "name": author.name,
-            "discriminator": author.discriminator,           
+            "discriminator": author.discriminator,
         },
         "content": message.content,
         "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -96,7 +93,7 @@ async def deleted_messages_general(message):
         "author": {
             "id": str(author.id),
             "name": author.name,
-            "discriminator": author.discriminator,           
+            "discriminator": author.discriminator,
         },
         "content": message.content,
         "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -175,6 +172,6 @@ async def on_message_delete(message):
         print(f"{channel_id}: {message.content}")
         await logging_function(message)
 
-                                             
+
 client.run(TOKEN)
 
