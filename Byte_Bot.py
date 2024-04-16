@@ -90,7 +90,6 @@ async def channel_log_general(message):
             "id": str(author.id),
             "name": author.name,
             "discriminator": author.discriminator,
-            "avatar_url": str(author.avatar_url) if hasattr(author, 'avatar_url') else None
         },
         "content": message.content,
         "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
