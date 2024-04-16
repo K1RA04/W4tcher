@@ -10,9 +10,10 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 USER_ID = os.getenv('USER_ID')
-CHANNEL_ACTIVE_DEVELOPING = int(os.getenv('CHANNEL_ACTIVE_DEVELOPING'))
-CHANNEL_GENERAL= int(os.getenv('CHANNEL_GENERAL'))
-CHANNEL_ALL_IN  = int(os.getenv('CHANNEL_ALL_IN'))
+active_developing = int(os.getenv('CHANNEL_ACTIVE_DEVELOPING'))
+general= int(os.getenv('CHANNEL_GENERAL'))
+all_in  = int(os.getenv('CHANNEL_ALL_IN'))
+chit_chat = int(os.getenv('VOICE_CHANNEL_CHIT_CHAT'))
 send_messages_to = [os.getenv('CHANNEL_ACTIVE_DEVELOPING'), os.getenv('CHANNEL_ALL_IN')]
 
 intents = discord.Intents.all()
@@ -20,6 +21,13 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 nonos = ["hs", "!leaderboard"]
+
+
+@client.event
+async def on_voice_state_connect(member, before, after):
+    if after.channel and after.channel.id == chit_chat:
+        user = member.display_name
+        await member.guild.owner.send(f"{user} has joined {after.channel.name}.")
 
 async def slur_context(message):
     author = message.author
@@ -167,8 +175,8 @@ async def on_ready():
 @client.event
 async def on_message(message):
     channel_handlers = {
-        CHANNEL_ACTIVE_DEVELOPING: on_message_active_developing,
-        CHANNEL_GENERAL: on_message_general
+        active_developing: on_message_active_developing,
+        general: on_message_general
     }
 
     for channel_id, handler in channel_handlers.items():
@@ -192,8 +200,8 @@ async def on_message_general(message):
 
 
 logging_functions = {
-    CHANNEL_GENERAL: deleted_messages_general,
-    CHANNEL_ACTIVE_DEVELOPING: deleted_messages_active_developing
+    general: deleted_messages_general,
+    active_developing: deleted_messages_active_developing
 }
 
 @client.event
