@@ -7,9 +7,9 @@ from Functions import commands
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-USER_ID = os.getenv('USER_ID')
+token = os.getenv('DISCORD_TOKEN')
+guild = os.getenv('DISCORD_GUILD')
+user_id = os.getenv('USER_ID')
 active_developing = int(os.getenv('CHANNEL_ACTIVE_DEVELOPING'))
 general= int(os.getenv('CHANNEL_GENERAL'))
 all_in  = int(os.getenv('CHANNEL_ALL_IN'))
@@ -23,11 +23,11 @@ client = discord.Client(intents=intents)
 nonos = ["hs", "!leaderboard"]
 
 
-@client.event
-async def on_voice_state_connect(member, before, after):
-    if after.channel and after.channel.id == chit_chat:
-        user = member.display_name
-        await member.guild.owner.send(f"{user} has joined {after.channel.name}.")
+# @client.event
+# async def on_voice_state_connect(member, before, after):
+#     if after.channel and after.channel.id == chit_chat:
+#         user = member.display_name
+#         await member.guild.owner.send(f"{user} has joined {after.channel.name}.")
 
 async def slur_context(message):
     author = message.author
@@ -39,7 +39,7 @@ async def slur_context(message):
              f"Content: {content}\n" \
              f"Channel: {channel.name} (ID: {channel.id})\n" \
 
-    user = await client.fetch_user(USER_ID)
+    user = await client.fetch_user(user_id)
     await user.send(report)
 
 
@@ -159,7 +159,7 @@ async def on_ready():
             await channel.send("Byte is online, and always watching...")
 
     for guild in client.guilds:
-        if guild.name == GUILD:
+        if guild.name == guild:
             break
 
     print(
@@ -171,6 +171,12 @@ async def on_ready():
 
     await write_session_info(guild, session_id)
 
+@client.event
+async def on_disconnect():
+    for channel_id in send_messages_to:
+        channel = client.get_channel(int(channel_id))
+        if channel:
+            await channel.send("Byte is offline...")
 
 @client.event
 async def on_message(message):
@@ -213,5 +219,5 @@ async def on_message_delete(message):
         await logging_function(message)
 
 
-client.run(TOKEN)
+client.run(token)
 
