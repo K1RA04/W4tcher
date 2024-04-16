@@ -126,6 +126,10 @@ async def write_session_info(guild, session_id):
 
 @client.event
 async def on_ready():
+    channel = client.get_channel(int(CHANNEL_ACTIVE_DEVELOPING))
+    if channel:
+        await channel.send("Byte is online, and always watching...")
+
     for guild in client.guilds:
         if guild.name == GUILD:
             break
