@@ -9,12 +9,31 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+USER_ID = os.getenv('USER_ID')
 CHANNEL_ACTIVE_DEVELOPING = int(os.getenv('CHANNEL_ACTIVE_DEVELOPING'))
 CHANNEL_GENERAL= int(os.getenv('CHANNEL_GENERAL'))
+CHANNEL_ALL_IN  = int(os.getenv('CHANNEL_ALL_IN'))
+send_messages_to = [os.getenv('CHANNEL_ACTIVE_DEVELOPING'), os.getenv('CHANNEL_ALL_IN')]
 
 intents = discord.Intents.all()
 
 client = discord.Client(intents=intents)
+
+nonos = ["hs", "!leaderboard"]
+
+async def slur_context(message):
+    author = message.author
+    content = message.content
+    channel = message.channel
+    
+    report = f"**Byte-Report**\n" \
+             f"Author: {author.name}#{author.discriminator}\n" \
+             f"Content: {content}\n" \
+             f"Channel: {channel.name} (ID: {channel.id})\n" \
+
+    user = await client.fetch_user(USER_ID)
+    await user.send(report)
+
 
 async def channel_log_active_developing(message):
     author = message.author
@@ -124,11 +143,13 @@ async def write_session_info(guild, session_id):
     with open("sessioninfo.json", "w") as json_file:
         json.dump(data, json_file, indent=4)
 
+
 @client.event
 async def on_ready():
-    channel = client.get_channel(int(CHANNEL_ACTIVE_DEVELOPING))
-    if channel:
-        await channel.send("Byte is online, and always watching...")
+    for channel_id in send_messages_to:
+        channel = client.get_channel(int(channel_id))
+        if channel:
+            await channel.send("Byte is online, and always watching...")
 
     for guild in client.guilds:
         if guild.name == GUILD:
@@ -155,6 +176,14 @@ async def on_message(message):
         if message.channel.id == channel_id:
             await handler(message)
             break
+
+    if message.author == client.user: 
+        return
+
+    for slur in nonos:
+        if slur in message.content.lower():
+            await slur_context(message)
+            break 
 
 async def on_message_active_developing(message):
     await channel_log_active_developing(message)
