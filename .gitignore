@@ -3,4 +3,6 @@ sessioninfo.json
 venv
 .history
 test.py
-dirtywords.sql
+dirtywords*
+*.accdb
+*laccdb
