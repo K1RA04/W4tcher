@@ -193,10 +193,10 @@ async def on_message(message):
     if message.author == client.user: 
         return
 
-    for slur in nonos:
-        if slur in message.content.lower():
-            await slur_context(message)
-            break 
+    
+    if message.content.lower() in nonos:
+        await slur_context(message)
+        
 
 async def on_message_active_developing(message):
     await channel_log_active_developing(message)
