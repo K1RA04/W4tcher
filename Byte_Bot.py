@@ -171,12 +171,12 @@ async def on_ready():
 
     await write_session_info(guild, session_id)
 
-@client.event
-async def on_disconnect():
-    for channel_id in send_messages_to:
-        channel = client.get_channel(int(channel_id))
-        if channel:
-            await channel.send("Byte is offline...")
+# @client.event
+# async def on_disconnect():
+#     for channel_id in send_messages_to:
+#         channel = client.get_channel(int(channel_id))
+#         if channel:
+#             await channel.send("Byte is offline...")
 
 @client.event
 async def on_message(message):
