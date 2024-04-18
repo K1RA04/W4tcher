@@ -2,8 +2,7 @@ import pyodbc as db
 
 
 class Db_driver():
-    def __init__(self): 
-        db_location = r"D:\testbereich\discordbot\W4tcher\watcher.accdb"
+    def __init__(self, db_location = r"D:\testbereich\discordbot\W4tcher\watcher.accdb"): 
         con_string = r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + f'{db_location}'
         conn = db.connect(con_string)
         self.cur = conn.cursor() 
