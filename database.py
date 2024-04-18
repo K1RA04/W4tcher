@@ -1,48 +1,5 @@
 import pyodbc as db 
-db_location = r"D:\testbereich\discordbot\W4tcher\watcher.accdb"
-con_string = r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + f'{db_location}'
-conn = db.connect(con_string)
-cur = conn.cursor() 
 
-# data = {
-#         "author": {
-#             "id": str(author.id),
-#             "name": author.name,
-#             "discriminator": author.discriminator
-#         },
-#         "content": message.content,
-#         "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-#         "channel": {
-#             "id": str(message.channel.id),
-#             "name": message.channel.name
-#         }
-#     }
-# data = {
-#         "author": {
-#             "id": 5,
-#             "name": "fifth",
-#             "discriminator": "test"
-#         },
-#         "content": "lügen ist scheiße",
-#         "timestamp": NULL,
-#         "channel": {
-#             "id": 5,
-#             "name": "test"
-#         }
-#     }
-
-
-# {
-
-#             "id": 6,
-#             "name": "M3rci",
-#             "discriminator": "bambus"
-#         }
-
-# {
-#             "id": 5413,
-#             "name": "Bot",
-#         }
 
 class Db_driver():
     def __init__(self): 
@@ -56,7 +13,6 @@ class Db_driver():
         try:
             command_search_for_author = f'SELECT * FROM Author Where DiscordID  = {data["id"]};'
             self.cur.execute(command_search_for_author)
-            #print(cur.fetchall())
             Name =  self.cur.fetchall()[0]
             return_tuple = ""
             if value == "id":
@@ -140,22 +96,6 @@ class Db_driver():
             self.cur.commit()
              
 
-message = {
-        "author": {
-            "id": 4,
-            "name": "fifth",
-            "discriminator": "test"
-        },
-        "content": "lügen ist scheiße",
-        "timestamp": "NULL",
-        "channel": {
-            "id": 5,
-            "name": "test"
-        }
-    }
-
-
-
-p1 = Db_driver()
-p1.save_message(message=message)
-command = 'create table if NOT EXIST Messages(ID INT not null auto_increment unique key primary key ,vorname varchar(32) )'
+# p1 = Db_driver()
+# p1.save_message(message=message)
+pass
