@@ -1,8 +1,8 @@
 import os
 import discord
 import json
-import globalfunc
-from globalfunc import log_channel_message
+import loggingmessages
+from loggingmessages import log_channel_message
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -21,11 +21,127 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 nonos = ["hs", "!leaderboard"]
+
+
 # @client.event
 # async def on_voice_state_connect(member, before, after):
 #     if after.channel and after.channel.id == chit_chat:
 #         user = member.display_name
 #         await member.guild.owner.send(f"{user} has joined {after.channel.name}.")
+
+
+@client.event
+async def on_ready():
+    for channel_id in send_messages_to:
+        channel = client.get_channel(int(channel_id))
+        if channel:
+            await channel.send("Byte is online, and always watching...")
+
+    for guild in client.guilds:
+        if guild.name == guild:
+            break
+
+    print(
+        f'{client.user} is connected to the following guild:\n'
+        f'{guild.name}(id: {guild.id})'
+    )
+
+
+
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    timestamp = message.created_at.strftime("%Y-%m-%d %H:%M:%S")
+  
+    message_data = {
+        "message_id": message.id,
+        "content": message.content,
+        "channel": {
+            "id": message.channel.id
+        },
+        "author": {
+            "name": message.author.name,
+            "nick": message.author.nick,
+            "id": message.author.id
+        },
+        "guild": {
+            "name": message.guild.name,
+            "id": message.guild.id
+        },
+        "timestamp": timestamp
+    }
+   
+    message_json = json.dumps(message_data, indent=4)
+
+    log_message(message.channel.name, message_json)
+
+
+
+
+@client.event
+async def on_message_delete(message):
+    if message.author == client.user:
+        return
+
+    timestamp = message.created_at.strftime("%Y-%m-%d %H:%M:%S")
+  
+    message_data = {
+        "message_id": message.id,
+        "content": message.content,
+        "channel": {
+            "id": message.channel.id
+        },
+        "author": {
+            "name": message.author.name,
+            "nick": message.author.nick,
+            "id": message.author.id
+        },
+        "guild": {
+            "name": message.guild.name,
+            "id": message.guild.id
+        },
+        "timestamp": timestamp
+    }
+   
+    message_json = json.dumps(message_data, indent=4)
+
+    log_message_deleted(message.channel.name, message_json)
+
+
+
+
+
+def log_message(channel_name, message_json):
+    
+    log_dir = "logs"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    
+    file_path = os.path.join(log_dir, f"{channel_name}.json")
+
+    
+    with open(file_path, "a") as log_file:
+        log_file.write(message_json + "\n")
+
+
+
+
+def log_message_deleted(channel_name, message_json):
+    
+    log_dir = "logsdeleted"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    
+    file_path = os.path.join(log_dir, f"{channel_name}.json")
+
+    
+    with open(file_path, "a") as log_file:
+        log_file.write(message_json + "\n")
+
+
 
 
 async def slur_context(message):
@@ -42,119 +158,7 @@ async def slur_context(message):
     await user.send(report)
 
 
-# async def channel_log_active_developing(message):
-#     author = message.author
 
-#     data = {
-#         "author": {
-#             "id": str(author.id),
-#             "name": author.name,
-#             "discriminator": author.discriminator,
-#         },
-#         "content": message.content,
-#         "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-#         "channel": {
-#             "id": str(message.channel.id),
-#             "name": message.channel.name
-#         }
-#     }
-
-#     with open("Logs\channel_active_developing\channel-log-activedeveloping.json", "a") as json_file:
-#         json.dump(data, json_file, indent=4)
-#         json_file.write('\n')
-@client.event
-async def on_message(message):
-    channel_handlers = {
-        active_developing: on_message_active_developing,
-        general: on_message_general
-    }
-
-    for channel_id, handler in channel_handlers.items():
-        if message.channel.id == channel_id:
-            await handler(message)
-            break
-
-    if message.author == client.user: 
-        return
-
-    
-    if message.content.lower() in nonos:
-        await slur_context(message)
-
-
-log_channel_message(active_developing, on_message)
-
-async def deleted_messages_active_developing(message):
-    print("Deleted Message: ", message.content)
-    author = message.author
-
-    data = {
-        "author": {
-            "id": str(author.id),
-            "name": author.name,
-            "discriminator": author.discriminator,
-        },
-        "content": message.content,
-        "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-        "channel": {
-            "id": str(message.channel.id),
-            "name": message.channel.name
-        }
-    }
-
-    file_path = "Logs/channel_active_developing/deleted-messages-log.json"
-    print("File path:", file_path)
-
-    with open(file_path, "a") as json_file:
-        json.dump(data, json_file, indent=4)
-        json_file.write('\n')
-
-
-async def channel_log_general(message):
-    author = message.author
-
-    data = {
-        "author": {
-            "id": str(author.id),
-            "name": author.name,
-            "discriminator": author.discriminator,
-        },
-        "content": message.content,
-        "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-        "channel": {
-            "id": str(message.channel.id),
-            "name": message.channel.name
-        }
-    }
-
-    with open("Logs\channel_general\channel-log-general.json", "a") as json_file:
-        json.dump(data, json_file, indent=4)
-        json_file.write('\n')
-
-async def deleted_messages_general(message):
-    #print("Deleted Message: ", message.content)
-    author = message.author
-
-    data = {
-        "author": {
-            "id": str(author.id),
-            "name": author.name,
-            "discriminator": author.discriminator,
-        },
-        "content": message.content,
-        "timestamp": message.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-        "channel": {
-            "id": str(message.channel.id),
-            "name": message.channel.name
-        }
-    }
-
-    file_path = "Logs/channel_general/deleted-messages-log.json"
-    print("File path:", file_path)
-
-    with open(file_path, "a") as json_file:
-        json.dump(data, json_file, indent=4)
-        json_file.write('\n')
 
 async def write_session_info(guild, session_id):
     data = {
@@ -169,6 +173,8 @@ async def write_session_info(guild, session_id):
 
     with open("sessioninfo.json", "w") as json_file:
         json.dump(data, json_file, indent=4)
+
+
 
 
 @client.event
@@ -199,28 +205,4 @@ async def on_ready():
 #             await channel.send("Byte is offline...")
 
 
-        
-
-# async def on_message_active_developing(message):
-#     await channel_log_active_developing(message)
-
-async def on_message_general(message):
-    await channel_log_general(message)
-
-
-logging_functions = {
-    general: deleted_messages_general,
-    active_developing: deleted_messages_active_developing
-}
-
-@client.event
-async def on_message_delete(message):
-    channel_id = message.channel.id
-    logging_function = logging_functions.get(channel_id)
-    if logging_function:
-        print(f"{channel_id}: {message.content}")
-        await logging_function(message)
-
-
 client.run(token)
-
