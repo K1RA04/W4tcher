@@ -1,8 +1,6 @@
 import os
 import discord
 import json
-import loggingmessages
-from loggingmessages import log_channel_message
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -29,7 +27,6 @@ nonos = ["hs", "!leaderboard"]
 #         user = member.display_name
 #         await member.guild.owner.send(f"{user} has joined {after.channel.name}.")
 
-
 @client.event
 async def on_ready():
     for channel_id in send_messages_to:
@@ -46,7 +43,9 @@ async def on_ready():
         f'{guild.name}(id: {guild.id})'
     )
 
+    session_id = client.ws.session_id
 
+    await write_session_info(guild, session_id)
 
 
 @client.event
@@ -176,26 +175,6 @@ async def write_session_info(guild, session_id):
 
 
 
-
-@client.event
-async def on_ready():
-    for channel_id in send_messages_to:
-        channel = client.get_channel(int(channel_id))
-        if channel:
-            await channel.send("Byte is online, and always watching...")
-
-    for guild in client.guilds:
-        if guild.name == guild:
-            break
-
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
-
-    session_id = client.ws.session_id
-
-    await write_session_info(guild, session_id)
 
 # @client.event
 # async def on_disconnect():
